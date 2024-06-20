@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "../Button/Button";
+import { ACTION_TOGGLE, ACTION_DELETE } from "../../constants/constants";
 
 export default function ListItem({
 	item,
@@ -15,13 +16,13 @@ export default function ListItem({
 				item={item}
 				title={activateTitle}
 				handleClick={handleClick}
-				action="toggle"
+				action={ACTION_TOGGLE}
 			/>{" "}
 			<Button
 				item={item}
 				title="Delete"
 				handleDelete={handleDelete}
-				action="delete"
+				action={ACTION_DELETE}
 			/>
 		</li>
 	);

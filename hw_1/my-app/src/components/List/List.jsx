@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import ListItem from "../ListItem/ListItem";
-import { animals } from "../../data/data";
 import classes from "../ListItem/classes.module.css";
+import { LIST_ACTIVE, LIST_DEACTIVE } from "../../constants/constants";
 
-export default function List() {
-	const [list, setList] = useState(animals);
+export default function List({ list: propsList = [] }) {
+	const [list, setList] = useState(propsList);
 	const [active, setActive] = useState([]);
 
 	const handleClick = (item) => {
@@ -29,7 +29,7 @@ export default function List() {
 				const isActive = active.includes(item);
 				const style = isActive ? classes.active : "";
 
-				const activateTitle = isActive ? "Deactivate" : "Activate";
+				const activateTitle = isActive ? LIST_DEACTIVE : LIST_ACTIVE;
 
 				return (
 					<ListItem

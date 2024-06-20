@@ -1,4 +1,5 @@
 import React from "react";
+import { ACTION_TOGGLE, ACTION_DELETE } from "../../constants/constants";
 
 export default function Button({
 	item,
@@ -8,9 +9,9 @@ export default function Button({
 	action,
 }) {
 	const onClick = () => {
-		if (action === "toggle") {
+		if (action === ACTION_TOGGLE) {
 			handleClick(item);
-		} else if (action === "delete") {
+		} else if (action === ACTION_DELETE) {
 			handleDelete(item);
 		}
 	};

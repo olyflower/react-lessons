@@ -1,10 +1,10 @@
 import React from "react";
-import RenderList from "./components/RenderList/RenderList";
+import List from "./components/List/List";
 
 export default function App() {
 	return (
 		<>
-			<RenderList />
+			<List />
 		</>
 	);
 }

@@ -1,27 +1,26 @@
 import React, { useEffect, useState } from "react";
-import {
-	STATUS_TODO,
-	STATUS_IN_PROGRESS,
-	STATUS_DONE,
-} from "../../constants/status";
-import classes from "../../components/TaskList/TaskList.module.css";
+import { STATUS } from "../../constants/status";
+import TaskCard from "../TaskCard/TaskCard";
+import { Container } from "../Style/Style";
 
 export default function TaskList({ list: propsList = [] }) {
 	const [list, setList] = useState(propsList);
 	const [countToDo, setCountToDo] = useState(0);
 	const [countInProgress, setCountInProgress] = useState(0);
-	const [countToArchive, setCountToArchive] = useState(0);
+	const [countDone, setCountDone] = useState(0);
 
-	const toDo = list.filter((item) => item.status === STATUS_TODO);
+	const toDo = list.filter((item) => item.status === STATUS.TODO.value);
 	const inProgress = list.filter(
-		(item) => item.status === STATUS_IN_PROGRESS
+		(item) => item.status === STATUS.IN_PROGRESS.value
 	);
-	const done = list.filter((item) => item.status === STATUS_DONE);
+	const done = list.filter((item) => item.status === STATUS.DONE.value);
 
 	const buttonInProgress = (id) => {
 		setList((prevList) =>
 			prevList.map((item) =>
-				item.id === id ? { ...item, status: STATUS_IN_PROGRESS } : item
+				item.id === id
+					? { ...item, status: STATUS.IN_PROGRESS.value }
+					: item
 			)
 		);
 	};
@@ -29,7 +28,7 @@ export default function TaskList({ list: propsList = [] }) {
 	const buttonToDo = (id) => {
 		setList((prevList) =>
 			prevList.map((item) =>
-				item.id === id ? { ...item, status: STATUS_TODO } : item
+				item.id === id ? { ...item, status: STATUS.TODO.value } : item
 			)
 		);
 	};
@@ -37,7 +36,7 @@ export default function TaskList({ list: propsList = [] }) {
 	const buttonDone = (id) => {
 		setList((prevList) =>
 			prevList.map((item) =>
-				item.id === id ? { ...item, status: STATUS_DONE } : item
+				item.id === id ? { ...item, status: STATUS.DONE.value } : item
 			)
 		);
 	};
@@ -49,60 +48,39 @@ export default function TaskList({ list: propsList = [] }) {
 	useEffect(() => {
 		setCountToDo(toDo.length);
 		setCountInProgress(inProgress.length);
-		setCountToArchive(done.length);
+		setCountDone(done.length);
 	}, [list]);
+
+	const buttonLabels = {
+		inProgress: STATUS.IN_PROGRESS.label,
+		toDo: STATUS.TODO.label,
+		done: STATUS.DONE.label,
+		toArchive: STATUS.IN_ARCHIVE.label,
+	};
 
 	return (
 		<>
-			<div className={classes.container}>
-				<div className={classes.content}>
-					<h2>To Do: {countToDo}</h2>
-					<ul>
-						{toDo.map((item) => (
-							<li key={item.id}>
-								{item.title}
-								<button
-									onClick={() => buttonInProgress(item.id)}
-								>
-									In progress
-								</button>
-							</li>
-						))}
-					</ul>
-				</div>
-				<div className={classes.content}>
-					<h2>In Progress: {countInProgress}</h2>
-					<ul>
-						{inProgress.map((item) => (
-							<li key={item.id}>
-								{item.title}{" "}
-								<button onClick={() => buttonToDo(item.id)}>
-									To Do
-								</button>{" "}
-								<button onClick={() => buttonDone(item.id)}>
-									Done
-								</button>
-							</li>
-						))}
-					</ul>
-				</div>
-
-				<div className={classes.content}>
-					<h2>Done: {countToArchive}</h2>
-					<ul>
-						{done.map((item) => (
-							<li key={item.id}>
-								{item.title}
-								<button
-									onClick={() => buttonToArchive(item.id)}
-								>
-									To archive
-								</button>
-							</li>
-						))}
-					</ul>
-				</div>
-			</div>
+			<Container>
+				<TaskCard
+					title={`${STATUS.TODO.label}: ${countToDo}`}
+					tasks={toDo}
+					buttonLabels={buttonLabels}
+					buttonInProgress={buttonInProgress}
+				/>
+				<TaskCard
+					title={`${STATUS.IN_PROGRESS.label}: ${countInProgress}`}
+					tasks={inProgress}
+					buttonLabels={buttonLabels}
+					buttonToDo={buttonToDo}
+					buttonDone={buttonDone}
+				/>
+				<TaskCard
+					title={`${STATUS.DONE.label}: ${countDone}`}
+					tasks={done}
+					buttonLabels={buttonLabels}
+					buttonToArchive={buttonToArchive}
+				/>
+			</Container>
 		</>
 	);
 }

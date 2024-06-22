@@ -1,5 +1,20 @@
-const STATUS_TODO = 0;
-const STATUS_IN_PROGRESS = 1;
-const STATUS_DONE = 2;
+const STATUS = {
+	TODO: {
+		value: 0,
+		label: "To Do",
+	},
+	IN_PROGRESS: {
+		value: 1,
+		label: "In Progress",
+	},
+	DONE: {
+		value: 2,
+		label: "Done",
+	},
+	IN_ARCHIVE: {
+		value: 3,
+		label: "In archive",
+	},
+};
 
-export {STATUS_TODO, STATUS_IN_PROGRESS, STATUS_DONE}
+export {STATUS};

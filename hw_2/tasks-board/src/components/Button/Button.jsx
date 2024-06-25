@@ -1,6 +1,6 @@
 import React from "react";
-import { TaskButton } from "../Style/Style";
+import { Btn } from "../Style/Style";
 
 export default function Button({ buttonLabel, onClickHandler }) {
-	return <TaskButton onClick={onClickHandler}>{buttonLabel}</TaskButton>;
+	return <Btn onClick={onClickHandler}>{buttonLabel}</Btn>;
 }

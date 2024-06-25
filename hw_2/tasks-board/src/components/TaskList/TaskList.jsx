@@ -51,34 +51,26 @@ export default function TaskList({ list: propsList = [] }) {
 		setCountDone(done.length);
 	}, [list]);
 
-	const buttonLabels = {
-		inProgress: STATUS.IN_PROGRESS.label,
-		toDo: STATUS.TODO.label,
-		done: STATUS.DONE.label,
-		toArchive: STATUS.IN_ARCHIVE.label,
-	};
-
 	return (
 		<>
 			<Container>
 				<TaskCard
 					title={`${STATUS.TODO.label}: ${countToDo}`}
 					tasks={toDo}
-					buttonLabels={buttonLabels}
-					buttonInProgress={buttonInProgress}
+					btns={[{ title: STATUS.TODO.label, fn: buttonInProgress }]}
 				/>
 				<TaskCard
 					title={`${STATUS.IN_PROGRESS.label}: ${countInProgress}`}
 					tasks={inProgress}
-					buttonLabels={buttonLabels}
-					buttonToDo={buttonToDo}
-					buttonDone={buttonDone}
+					btns={[
+						{ title: STATUS.IN_PROGRESS.label, fn: buttonToDo },
+						{ title: STATUS.DONE.label, fn: buttonDone },
+					]}
 				/>
 				<TaskCard
 					title={`${STATUS.DONE.label}: ${countDone}`}
 					tasks={done}
-					buttonLabels={buttonLabels}
-					buttonToArchive={buttonToArchive}
+					btns={[{ title: STATUS.DONE.label, fn: buttonToArchive }]}
 				/>
 			</Container>
 		</>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { API } from "../../../constants/constants";
+import services from "../../../services/service";
 
 export default function List({ newItem }) {
 	const [list, setList] = useState([]);
@@ -12,13 +12,8 @@ export default function List({ newItem }) {
 	}, [newItem]);
 
 	const getToDos = async () => {
-		try {
-			const response = await fetch(API);
-			const toDos = await response.json();
-			setList(toDos);
-		} catch (err) {
-			console.log(err);
-		}
+		const response = await services.get();
+		setList(response);
 	};
 
 	useEffect(() => {
@@ -27,9 +22,7 @@ export default function List({ newItem }) {
 
 	const deleteToDo = async (id) => {
 		try {
-			await fetch(`${API}/${id}`, {
-				method: "DELETE",
-			});
+			await services.delete(id);
 
 			setList((prevList) => prevList.filter((item) => id !== item.id));
 		} catch (err) {
@@ -39,14 +32,7 @@ export default function List({ newItem }) {
 
 	const handleEditCheckbox = async (id, completed) => {
 		try {
-			const request = await fetch(`${API}/${id}`, {
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ completed }),
-			});
-			const response = await request.json();
+			const response = await services.patch(id, { completed });
 
 			setList((prevList) =>
 				prevList.map((item) => {
@@ -66,15 +52,7 @@ export default function List({ newItem }) {
 	const handleSubmitEditTitle = async (e, id) => {
 		e.preventDefault();
 		try {
-			const request = await fetch(`${API}/${id}`, {
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ title: newTitle }),
-			});
-
-			const response = await request.json();
+			const response = await services.patch(id, { title: newTitle });
 
 			setList((prevList) =>
 				prevList.map((item) => {

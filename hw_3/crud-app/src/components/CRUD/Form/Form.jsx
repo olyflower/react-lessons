@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { API } from "../../../constants/constants";
+import services from "../../../services/service";
 
 export default function Form({ liftingNewItem }) {
 	const [newItem, setNewItem] = useState({
@@ -24,14 +24,7 @@ export default function Form({ liftingNewItem }) {
 	const onSubmitHandler = async (e) => {
 		e.preventDefault();
 		try {
-			const request = await fetch(`${API}`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(newItem),
-			});
-			const response = await request.json();
+			const response = await services.post(newItem);
 
 			setNewItem({ title: "New Title", completed: true });
 			liftingNewItem(response);

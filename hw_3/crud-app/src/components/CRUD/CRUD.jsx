@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import List from "./List/List";
-import Form from "./Form/Form";
+import FormCreate from "./FormCreate/FormCreate";
 
 export default function CRUD() {
 	const [newItem, setNewItem] = useState();
 	return (
 		<>
-			<Form liftingNewItem={setNewItem} />
+			<FormCreate liftingNewItem={setNewItem} />
 			<List newItem={newItem} />
 		</>
 	);

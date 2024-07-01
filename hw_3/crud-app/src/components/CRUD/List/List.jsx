@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import services from "../../../services/service";
+import { Container, Btn, BtnAdd, Input, Label } from "../../../style/style";
 
 export default function List({ newItem }) {
 	const [list, setList] = useState([]);
@@ -66,7 +67,7 @@ export default function List({ newItem }) {
 	};
 
 	return (
-		<div>
+		<Container>
 			<h2>ToDo:</h2>
 			{list.length ? (
 				<ul>
@@ -83,25 +84,25 @@ export default function List({ newItem }) {
 									)
 								}
 							/>
-							<button onClick={() => deleteToDo(item.id)}>
+							<Btn onClick={() => deleteToDo(item.id)}>
 								Delete
-							</button>
+							</Btn>
 							<form
 								onSubmit={(e) =>
 									handleSubmitEditTitle(e, item.id)
 								}
 							>
-								<label>
+								<Label>
 									Edit title
-									<input
+									<Input
 										type="text"
 										onChange={(e) =>
 											handleEditTitle(e.target.value)
 										}
 										defaultValue={item.title}
 									/>
-								</label>
-								<button type="submit">Save</button>
+								</Label>
+								<BtnAdd type="submit">Save</BtnAdd>
 							</form>
 						</li>
 					))}
@@ -109,6 +110,6 @@ export default function List({ newItem }) {
 			) : (
 				<p>No tasks found</p>
 			)}
-		</div>
+		</Container>
 	);
 }

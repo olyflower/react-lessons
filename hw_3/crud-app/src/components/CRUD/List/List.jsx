@@ -1,82 +1,34 @@
-import React, { useState, useEffect } from "react";
-import services from "../../../services/service";
-import { Container, Btn, BtnAdd, Input, Label } from "../../../style/style";
+import React, { memo } from "react";
+import useList from "../../../hooks/useList";
+import {
+	Container,
+	Btn,
+	BtnAdd,
+	Input,
+	Label,
+} from "../../../style/style";
+import { FaTrash, FaRegSave } from "react-icons/fa";
 
-export default function List({ newItem }) {
-	const [list, setList] = useState([]);
-	const [newTitle, setNewTitle] = useState("");
-
-	useEffect(() => {
-		if (newItem) {
-			setList((prevList) => [...prevList, newItem]);
-		}
-	}, [newItem]);
-
-	const getToDos = async () => {
-		const response = await services.get();
-		setList(response);
-	};
-
-	useEffect(() => {
-		getToDos();
-	}, []);
-
-	const deleteToDo = async (id) => {
-		try {
-			await services.delete(id);
-
-			setList((prevList) => prevList.filter((item) => id !== item.id));
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const handleEditCheckbox = async (id, completed) => {
-		try {
-			const response = await services.patch(id, { completed });
-
-			setList((prevList) =>
-				prevList.map((item) => {
-					if (item.id === response.id) item = response;
-					return item;
-				})
-			);
-		} catch (err) {
-			console.log(err);
-		}
-	};
-
-	const handleEditTitle = (e) => {
-		setNewTitle(e);
-	};
-
-	const handleSubmitEditTitle = async (e, id) => {
-		e.preventDefault();
-		try {
-			const response = await services.patch(id, { title: newTitle });
-
-			setList((prevList) =>
-				prevList.map((item) => {
-					if (item.id === response.id) item = response;
-					return item;
-				})
-			);
-		} catch (err) {
-			console.log(err);
-		}
-	};
+export default memo(function List({ newItem, color, filter }) {
+	const [
+		filteredList,
+		deleteToDo,
+		handleEditCheckbox,
+		handleEditTitle,
+		handleSubmitEditTitle,
+	] = useList(newItem, filter);
 
 	return (
 		<Container>
 			<h2>ToDo:</h2>
-			{list.length ? (
-				<ul>
-					{list.map((item, index) => (
+			{filteredList.length ? (
+				<ul style={{ color: color }}>
+					{filteredList.map((item, index) => (
 						<li key={index}>
-							{item.title}{" "}
+							{item.title}
 							<input
 								type="checkbox"
-								defaultChecked={item.completed}
+								checked={item.completed}
 								onChange={(e) =>
 									handleEditCheckbox(
 										item.id,
@@ -85,7 +37,7 @@ export default function List({ newItem }) {
 								}
 							/>
 							<Btn onClick={() => deleteToDo(item.id)}>
-								Delete
+								<FaTrash />
 							</Btn>
 							<form
 								onSubmit={(e) =>
@@ -102,7 +54,9 @@ export default function List({ newItem }) {
 										defaultValue={item.title}
 									/>
 								</Label>
-								<BtnAdd type="submit">Save</BtnAdd>
+								<BtnAdd type="submit">
+									<FaRegSave />
+								</BtnAdd>
 							</form>
 						</li>
 					))}
@@ -112,4 +66,4 @@ export default function List({ newItem }) {
 			)}
 		</Container>
 	);
-}
+});

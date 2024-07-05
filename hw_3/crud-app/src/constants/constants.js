@@ -1,3 +1,15 @@
 const API = "https://jsonplaceholder.typicode.com/todos";
 
-export { API };
+const LIST_FILTER_ALL = "LIST_FILTER_ALL";
+const LIST_FILTER_COMPLETED = "LIST_FILTER_COMPLETED";
+const LIST_FILTER_PROGRESS = "LIST_FILTER_PROGRESS";
+
+const DEFAULT_COLOR = "#000000";
+
+export {
+	API,
+	LIST_FILTER_ALL,
+	LIST_FILTER_COMPLETED,
+	LIST_FILTER_PROGRESS,
+	DEFAULT_COLOR,
+};

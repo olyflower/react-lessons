@@ -27,9 +27,14 @@ export const BtnAdd = styled.button`
 `;
 
 export const Input = styled.input`
-	margin-left: 10px;
+	margin-left: 20px;
 `;
 
 export const Label = styled.label`
 	font-weight: bold;
+`;
+
+export const Select = styled.select`
+	display: block;
+	margin: 20px;
 `;

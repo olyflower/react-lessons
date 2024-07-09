@@ -6,12 +6,12 @@ export default function UserDetail() {
 	const { id } = useParams();
 	const [user, setUser] = useState(null);
 
-	const getUser = async (id) => {
-		const response = await services.get(id);
-		setUser(response);
-	};
-
 	useEffect(() => {
+		const getUser = async (id) => {
+			const response = await services.get(id);
+			setUser(response);
+		};
+
 		if (id) {
 			getUser(id);
 		}

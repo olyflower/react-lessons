@@ -5,12 +5,12 @@ import services from "../services/services";
 export default function Users() {
 	const [users, setUsers] = useState([]);
 
-	const getUsers = async () => {
-		const response = await services.get();
-		setUsers(response);
-	};
-
 	useEffect(() => {
+		const getUsers = async () => {
+			const response = await services.get();
+			setUsers(response);
+		};
+
 		getUsers();
 	}, []);
 

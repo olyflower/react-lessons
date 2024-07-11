@@ -1,10 +1,16 @@
 import React from "react";
+import classNames from "classnames";
 import Button from "../Button/Button";
 import style from "../MenuItem/MenuItem.module.css";
 
 export default function MenuItem({ item, index }) {
 	return (
-		<li className={`${style.pizza} ${item.soldOut ? style.soldOut : ""}`} key={index}>
+		<li
+			className={classNames(style.pizza, {
+				[style.soldOut]: item.soldOut,
+			})}
+			key={index}
+		>
 			<img
 				className={style.pizza__image}
 				src={item.imageUrl}

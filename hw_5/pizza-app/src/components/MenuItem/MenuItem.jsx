@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import Button from "../Button/Button";
 import style from "../MenuItem/MenuItem.module.css";
 
 export default function MenuItem({ item, index }) {
+	const [count, setCount] = useState(0);
+	const [addCart, setAddCart] = useState(false);
+
+	const handlerIncrement = () => {
+		setCount(count + 1);
+	};
+
+	const handlerDecrement = () => {
+		if (count > 0) setCount(count - 1);
+	};
+
+	const handleAddToCart = () => {
+		setAddCart(true);
+		setCount(1);
+	};
+
+	const handleDelete = () => {
+		setAddCart(false);
+		setCount(0);
+	};
+
 	return (
 		<li
 			className={classNames(style.pizza, {
@@ -29,9 +50,28 @@ export default function MenuItem({ item, index }) {
 							<p className={style.pizza__price}>
 								€{item.unitPrice.toFixed(2)}
 							</p>
-							<Button onClick={() => console.log("Add to Cart")}>
-								Add to cart
-							</Button>
+
+							{!addCart ? (
+								<Button onClick={handleAddToCart}>
+									Add to cart
+								</Button>
+							) : (
+								<>
+									<div className={style.pizza__count}>
+										<Button onClick={handlerDecrement}>
+											-
+										</Button>
+										{count}
+										<Button onClick={handlerIncrement}>
+											+
+										</Button>
+									</div>
+
+									<Button onClick={handleDelete}>
+										Delete
+									</Button>
+								</>
+							)}
 						</>
 					)}
 				</div>

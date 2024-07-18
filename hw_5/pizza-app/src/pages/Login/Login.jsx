@@ -1,27 +1,27 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/context";
 import style from "../../pages/Login/Login.module.css";
-import Header from "../../components/Header/Header";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
 
 export default function Login() {
 	const [userName, setUserName] = useState("");
-	const { login } = useContext(AuthContext);
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const handlerSubmit = (e) => {
 		e.preventDefault();
 		if (userName) {
-			login(userName);
+			dispatch(login({ userName: userName }));
 			navigate("/menu");
 		}
 	};
 	return (
 		<div className={style.container}>
 			<div className={style.wrapper}>
-				<Header />
+	
 				<div className={style.content}>
 					<h1 className={style.title}>
 						The best pizza.

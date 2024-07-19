@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	addToCart,
@@ -16,7 +16,7 @@ export default function MenuItem({ item, index }) {
 		store.cart.items.find((cartItem) => cartItem.id === item.id)
 	);
 
-	const handleAddToCart = () => {
+	const handleAddToCart = useCallback(() => {
 		dispatch(
 			addToCart({
 				id: item.id,
@@ -24,26 +24,26 @@ export default function MenuItem({ item, index }) {
 				unitPrice: item.unitPrice,
 			})
 		);
-	};
+	}, [[dispatch, item.id, item.name, item.unitPrice]]);
 
-	const handleDeleteFromCart = () => {
+	const handleDeleteFromCart = useCallback(() => {
 		dispatch(deleteFromCart({ id: item.id }));
-	};
+	}, [[dispatch, item.id]]);
 
-	const handleIncrement = () => {
+	const handleIncrement = useCallback(() => {
 		dispatch(incrementQuantity({ id: item.id }));
-	};
+	}, [[dispatch, item.id]]);
 
-	const handleDecrement = () => {
+	const handleDecrement = useCallback(() => {
 		dispatch(decrementQuantity({ id: item.id }));
-	};
+	}, [[dispatch, item.id]]);
 
 	return (
 		<li
 			className={classNames(style.pizza, {
 				[style.soldOut]: item.soldOut,
 			})}
-			key={index}
+			key={item.id}
 		>
 			<img
 				className={style.pizza__image}

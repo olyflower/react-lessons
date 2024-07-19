@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -13,28 +13,34 @@ import style from "../Cart/Cart.module.css";
 export default function Cart() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const cartItems = useSelector((store) => store.cart.items);
+	const cart = useSelector((store) => store.cart);
 	const userName = useSelector((state) => state.auth.userName);
 
-	const handlerRedirectMenu = () => {
+	const handlerRedirectMenu = useCallback(() => {
 		navigate("/menu");
-	};
+	}, [navigate]);
 
-	const handleClearCart = () => {
+	const handleClearCart = useCallback(() => {
 		dispatch(clearCart());
-	};
+	}, [dispatch]);
 
-	const handleIncrement = (id) => {
+	const handleIncrement = useCallback((id) => {
 		dispatch(incrementQuantity({ id }));
-	};
+	}, dispatch);
 
-	const handleDecrement = (id) => {
-		dispatch(decrementQuantity({ id }));
-	};
+	const handleDecrement = useCallback(
+		(id) => {
+			dispatch(decrementQuantity({ id }));
+		},
+		[dispatch]
+	);
 
-	const handleDeleteFromCart = (id) => {
-		dispatch(deleteFromCart({ id }));
-	};
+	const handleDeleteFromCart = useCallback(
+		(id) => {
+			dispatch(deleteFromCart({ id }));
+		},
+		[dispatch]
+	);
 
 	return (
 		<div className={style.container}>
@@ -48,11 +54,11 @@ export default function Cart() {
 			</div>
 
 			<div className={style.content}>
-				{cartItems.length === 0 ? (
+				{cart.items.length === 0 ? (
 					<p>Cart is empty.</p>
 				) : (
 					<ul>
-						{cartItems.map((item) => (
+						{cart.items.map((item) => (
 							<div key={item.id} className={style.items}>
 								<li>
 									<div className={style.content}>
@@ -97,6 +103,10 @@ export default function Cart() {
 						))}
 					</ul>
 				)}
+			</div>
+			<div className={style.totals}>
+				<p>Total items: {cart.totalItems}</p>
+				<p>Total price: €{cart.totalPrice}</p>
 			</div>
 			<div className={style.buttons}>
 				<Button>Order Pizzas</Button>

@@ -9,6 +9,7 @@ import {
 } from "../../redux/slices/cartSlice";
 import Button from "../../components/Button/Button";
 import style from "../Cart/Cart.module.css";
+import CartItem from "../../components/CartItem/CartItem";
 
 export default function Cart() {
 	const dispatch = useDispatch();
@@ -24,9 +25,12 @@ export default function Cart() {
 		dispatch(clearCart());
 	}, [dispatch]);
 
-	const handleIncrement = useCallback((id) => {
-		dispatch(incrementQuantity({ id }));
-	}, dispatch);
+	const handleIncrement = useCallback(
+		(id) => {
+			dispatch(incrementQuantity({ id }));
+		},
+		[dispatch]
+	);
 
 	const handleDecrement = useCallback(
 		(id) => {
@@ -59,47 +63,13 @@ export default function Cart() {
 				) : (
 					<ul>
 						{cart.items.map((item) => (
-							<div key={item.id} className={style.items}>
-								<li>
-									<div className={style.content}>
-										<span>
-											{item.quantity}*{item.name}
-										</span>
-										<span>
-											€
-											{item.unitPrice.toFixed(2) *
-												item.quantity}
-										</span>
-
-										<div className={style.buttons}>
-											<Button
-												onClick={() =>
-													handleDecrement(item.id)
-												}
-											>
-												-
-											</Button>
-											{item.quantity}
-											<Button
-												onClick={() =>
-													handleIncrement(item.id)
-												}
-											>
-												+
-											</Button>
-											<Button
-												onClick={() =>
-													handleDeleteFromCart(
-														item.id
-													)
-												}
-											>
-												Delete
-											</Button>
-										</div>
-									</div>
-								</li>
-							</div>
+							<CartItem
+								key={item.id}
+								item={item}
+								handleIncrement={handleIncrement}
+								handleDecrement={handleDecrement}
+								handleDeleteFromCart={handleDeleteFromCart}
+							/>
 						))}
 					</ul>
 				)}

@@ -15,7 +15,7 @@ export default function Cart() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const cart = useSelector((store) => store.cart);
-	const userName = useSelector((state) => state.auth.userName);
+	const userName = useSelector((store) => store.auth.userName);
 
 	const handlerRedirectMenu = useCallback(() => {
 		navigate("/menu");

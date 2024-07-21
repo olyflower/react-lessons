@@ -8,8 +8,8 @@ export default function MenuList({ data }) {
 			<div className={style.container}>
 				<div className={style.wrapper}>
 					<ul>
-						{data.map((item, index) => (
-							<MenuItem item={item} key={index} />
+						{data.map((item) => (
+							<MenuItem item={item} key={item.id} />
 						))}
 					</ul>
 				</div>

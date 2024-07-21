@@ -8,10 +8,12 @@ const initialState = {
 
 const calculateTotals = (state) => {
 	state.totalPrice = state.items.reduce(
-		(total, item) => total + item.quantity * item.unitPrice, 0
+		(total, item) => total + item.quantity * item.unitPrice,
+		0
 	);
 	state.totalItems = state.items.reduce(
-		(total, item) => total + item.quantity, 0
+		(total, item) => total + item.quantity,
+		0
 	);
 };
 

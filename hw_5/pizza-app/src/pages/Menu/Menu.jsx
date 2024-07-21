@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import MenuList from "../../components/MenuList/MenuList";
-import service from "../../services/services";
+import { getData } from "../../redux/slices/menuSlice";
 
 export default function Menu() {
-	const [data, setData] = useState([]);
+	const dispatch = useDispatch();
+	const { items } = useSelector((store) => store.menu);
 
 	useEffect(() => {
-		const getData = async () => {
-			const response = await service.get();
-			setData(response.data);
-		};
-
-		getData();
-	}, []);
+		dispatch(getData());
+	}, [dispatch]);
 
 	return (
 		<>
-			<MenuList data={data} />
+			<MenuList data={items} />
 		</>
 	);
 }

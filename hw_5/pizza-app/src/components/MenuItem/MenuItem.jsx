@@ -10,7 +10,7 @@ import classNames from "classnames";
 import Button from "../Button/Button";
 import style from "../MenuItem/MenuItem.module.css";
 
-export default function MenuItem({ item, index }) {
+export default function MenuItem({ item }) {
 	const dispatch = useDispatch();
 	const cartItem = useSelector((store) =>
 		store.cart.items.find((cartItem) => cartItem.id === item.id)
@@ -24,19 +24,19 @@ export default function MenuItem({ item, index }) {
 				unitPrice: item.unitPrice,
 			})
 		);
-	}, [[dispatch, item.id, item.name, item.unitPrice]]);
+	}, [dispatch, item.id, item.name, item.unitPrice]);
 
 	const handleDeleteFromCart = useCallback(() => {
 		dispatch(deleteFromCart({ id: item.id }));
-	}, [[dispatch, item.id]]);
+	}, [dispatch, item.id]);
 
 	const handleIncrement = useCallback(() => {
 		dispatch(incrementQuantity({ id: item.id }));
-	}, [[dispatch, item.id]]);
+	}, [dispatch, item.id]);
 
 	const handleDecrement = useCallback(() => {
 		dispatch(decrementQuantity({ id: item.id }));
-	}, [[dispatch, item.id]]);
+	}, []);
 
 	return (
 		<li

@@ -1,12 +1,17 @@
-import React, { useContext } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../context/context";
 import style from "../../components/Header/Header.module.css";
-import Input from "../../components/Input/Input";
+import Input from "../Input/Input";
+import Button from "../Button/Button";
 
 export default function Header() {
-	const { user } = useContext(AuthContext);
-
+	const navigate = useNavigate();
+	const userName = useSelector((state) => state.auth.userName);
+	const handleNavigateToCart = () => {
+		navigate('/cart')
+	}
 	return (
 		<div className={style.header}>
 			<Link className={style.logo} to="/">
@@ -15,7 +20,8 @@ export default function Header() {
 			<form>
 				<Input placeholder="Search for the order #" />
 			</form>
-			{user && <p>{user}</p>}
+			{userName && <p>{userName}</p>}
+			<Button onClick={handleNavigateToCart}>Cart</Button>
 		</div>
 	);
 }

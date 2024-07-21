@@ -1,36 +1,49 @@
-import React, { useState } from "react";
+import React, { useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+	addToCart,
+	deleteFromCart,
+	incrementQuantity,
+	decrementQuantity,
+} from "../../redux/slices/cartSlice";
 import classNames from "classnames";
 import Button from "../Button/Button";
 import style from "../MenuItem/MenuItem.module.css";
 
-export default function MenuItem({ item, index }) {
-	const [count, setCount] = useState(0);
-	const [addCart, setAddCart] = useState(false);
+export default function MenuItem({ item }) {
+	const dispatch = useDispatch();
+	const cartItem = useSelector((store) =>
+		store.cart.items.find((cartItem) => cartItem.id === item.id)
+	);
 
-	const handlerIncrement = () => {
-		setCount(count + 1);
-	};
+	const handleAddToCart = useCallback(() => {
+		dispatch(
+			addToCart({
+				id: item.id,
+				name: item.name,
+				unitPrice: item.unitPrice,
+			})
+		);
+	}, [dispatch, item.id, item.name, item.unitPrice]);
 
-	const handlerDecrement = () => {
-		if (count > 0) setCount(count - 1);
-	};
+	const handleDeleteFromCart = useCallback(() => {
+		dispatch(deleteFromCart({ id: item.id }));
+	}, [dispatch, item.id]);
 
-	const handleAddToCart = () => {
-		setAddCart(true);
-		setCount(1);
-	};
+	const handleIncrement = useCallback(() => {
+		dispatch(incrementQuantity({ id: item.id }));
+	}, [dispatch, item.id]);
 
-	const handleDelete = () => {
-		setAddCart(false);
-		setCount(0);
-	};
+	const handleDecrement = useCallback(() => {
+		dispatch(decrementQuantity({ id: item.id }));
+	}, []);
 
 	return (
 		<li
 			className={classNames(style.pizza, {
 				[style.soldOut]: item.soldOut,
 			})}
-			key={index}
+			key={item.id}
 		>
 			<img
 				className={style.pizza__image}
@@ -51,23 +64,23 @@ export default function MenuItem({ item, index }) {
 								€{item.unitPrice.toFixed(2)}
 							</p>
 
-							{!addCart ? (
+							{!cartItem ? (
 								<Button onClick={handleAddToCart}>
 									Add to cart
 								</Button>
 							) : (
 								<>
 									<div className={style.pizza__count}>
-										<Button onClick={handlerDecrement}>
+										<Button onClick={handleDecrement}>
 											-
 										</Button>
-										{count}
-										<Button onClick={handlerIncrement}>
+										{cartItem.quantity}
+										<Button onClick={handleIncrement}>
 											+
 										</Button>
 									</div>
 
-									<Button onClick={handleDelete}>
+									<Button onClick={handleDeleteFromCart}>
 										Delete
 									</Button>
 								</>

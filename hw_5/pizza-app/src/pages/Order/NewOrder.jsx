@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addOrder } from "../../redux/slices/orderSlice";
+import { useRedirect } from "../../hooks/useRedirect";
 import Button from "../../components/Button/Button";
 import style from "../Order/NewOrder.module.css";
 
@@ -20,6 +22,8 @@ export default function NewOrder() {
 	});
 
 	const totalPrice = useSelector((store) => store.cart.totalPrice);
+	const dispatch = useDispatch();
+	const redirectToOrder = useRedirect("/order");
 
 	const handleBlur = (event) => {
 		const { name, value } = event.target;
@@ -47,6 +51,16 @@ export default function NewOrder() {
 		event.preventDefault();
 		console.log(formData);
 
+		const newOrder = {
+			...formData,
+			totalPrice,
+			id: Date.now(),
+		};
+
+		dispatch(addOrder(newOrder));
+
+		redirectToOrder();
+
 		setFormData({
 			name: "",
 			phone: "",
@@ -57,10 +71,10 @@ export default function NewOrder() {
 	};
 
 	const handleChange = (event) => {
-		const { name, value } = event.target;
+		const { name, value, type, checked } = event.target;
 		setFormData({
 			...formData,
-			[name]: value,
+			[name]: type === "checkbox" ? checked : value,
 		});
 	};
 

@@ -1,27 +1,27 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../../redux/slices/authSlice";
-import { useNavigate } from "react-router-dom";
-import style from "../../pages/Login/Login.module.css";
+import { useRedirect } from "../../hooks/useRedirect";
 import Button from "../../components/Button/Button";
 import Input from "../../components/Input/Input";
+import style from "../../pages/Login/Login.module.css";
 
 export default function Login() {
 	const [userName, setUserName] = useState("");
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
+
+	const redirectToMenu = useRedirect("/menu");
 
 	const handlerSubmit = (e) => {
 		e.preventDefault();
 		if (userName) {
 			dispatch(login({ userName: userName }));
-			navigate("/menu");
+			redirectToMenu();
 		}
 	};
 	return (
 		<div className={style.container}>
 			<div className={style.wrapper}>
-	
 				<div className={style.content}>
 					<h1 className={style.title}>
 						The best pizza.

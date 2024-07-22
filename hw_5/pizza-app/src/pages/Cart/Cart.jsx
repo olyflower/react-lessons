@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import {
 	deleteFromCart,
@@ -8,18 +7,17 @@ import {
 	clearCart,
 } from "../../redux/slices/cartSlice";
 import Button from "../../components/Button/Button";
+import { useRedirect } from "../../hooks/useRedirect";
 import style from "../Cart/Cart.module.css";
 import CartItem from "../../components/CartItem/CartItem";
 
 export default function Cart() {
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 	const cart = useSelector((store) => store.cart);
 	const userName = useSelector((store) => store.auth.userName);
 
-	const handlerRedirectMenu = useCallback(() => {
-		navigate("/menu");
-	}, [navigate]);
+	const redirectToMenu = useRedirect("/menu");
+	const redirectToOrder = useRedirect("/order");
 
 	const handleClearCart = useCallback(() => {
 		dispatch(clearCart());
@@ -46,15 +44,11 @@ export default function Cart() {
 		[dispatch]
 	);
 
-	const handlerRedirectOrder = () => {
-		navigate("/order");
-	};
-
 	return (
 		<div className={style.container}>
 			<div className={style.actions}>
 				<div>
-					<Button onClick={handlerRedirectMenu}>
+					<Button onClick={redirectToMenu}>
 						{"\u2190"}Back to menu
 					</Button>
 				</div>
@@ -83,7 +77,7 @@ export default function Cart() {
 				<p>Total price: €{cart.totalPrice}</p>
 			</div>
 			<div className={style.buttons}>
-				<Button onClick={handlerRedirectOrder}>Order Pizzas</Button>
+				<Button onClick={redirectToOrder}>Order Pizzas</Button>
 				<Button onClick={handleClearCart}>Clear Cart</Button>
 			</div>
 		</div>

@@ -6,8 +6,8 @@ import {
 	incrementQuantity,
 	decrementQuantity,
 } from "../../redux/slices/cartSlice";
-import classNames from "classnames";
 import Button from "../Button/Button";
+import classNames from "classnames";
 import style from "../MenuItem/MenuItem.module.css";
 
 export default function MenuItem({ item }) {

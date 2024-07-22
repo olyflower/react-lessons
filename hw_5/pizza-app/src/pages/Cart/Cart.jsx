@@ -46,6 +46,10 @@ export default function Cart() {
 		[dispatch]
 	);
 
+	const handlerRedirectOrder = () => {
+		navigate("/order");
+	};
+
 	return (
 		<div className={style.container}>
 			<div className={style.actions}>
@@ -79,7 +83,7 @@ export default function Cart() {
 				<p>Total price: €{cart.totalPrice}</p>
 			</div>
 			<div className={style.buttons}>
-				<Button>Order Pizzas</Button>
+				<Button onClick={handlerRedirectOrder}>Order Pizzas</Button>
 				<Button onClick={handleClearCart}>Clear Cart</Button>
 			</div>
 		</div>

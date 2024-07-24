@@ -1,167 +1,111 @@
-import React, { useState } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addOrder } from "../../redux/slices/orderSlice";
 import { useRedirect } from "../../hooks/useRedirect";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import Button from "../../components/Button/Button";
 import style from "../Order/NewOrder.module.css";
 
+const validationSchema = Yup.object({
+	name: Yup.string().required("Required"),
+	phone: Yup.string()
+		.matches(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
+		.required("Required"),
+	email: Yup.string().email("Invalid email").required("Required"),
+	address: Yup.string().required("Required"),
+});
+
 export default function NewOrder() {
-	const [formData, setFormData] = useState({
-		name: "",
-		phone: "",
-		email: "",
-		address: "",
-		priority: false,
-	});
-
-	const [errors, setErrors] = useState({
-		name: "",
-		phone: "",
-		email: "",
-		address: "",
-	});
-
 	const totalPrice = useSelector((store) => store.cart.totalPrice);
 	const dispatch = useDispatch();
 	const redirectToOrder = useRedirect("/order");
 
-	const handleBlur = (event) => {
-		const { name, value } = event.target;
-		let error = "";
-
-		if (name === "email" && value.trim() && !/\S+@\S+\.\S+/.test(value)) {
-			error = "Invalid email";
-		}
-
-		if (
-			name === "phone" &&
-			value.trim() &&
-			!/^\+?[1-9]\d{1,14}$/.test(value)
-		) {
-			error = "Invalid phone number";
-		}
-
-		setErrors((prevErrors) => ({
-			...prevErrors,
-			[name]: error,
-		}));
-	};
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		console.log(formData);
-
+	const handleSubmit = (values, { resetForm }) => {
 		const newOrder = {
-			...formData,
+			...values,
 			totalPrice,
 			id: Date.now(),
 		};
 
 		dispatch(addOrder(newOrder));
-
 		redirectToOrder();
-
-		setFormData({
-			name: "",
-			phone: "",
-			email: "",
-			address: "",
-			priority: false,
-		});
-	};
-
-	const handleChange = (event) => {
-		const { name, value, type, checked } = event.target;
-		setFormData({
-			...formData,
-			[name]: type === "checkbox" ? checked : value,
-		});
+		resetForm();
 	};
 
 	return (
 		<div className={style.container}>
 			<h1>Ready to order? Let's go!</h1>
-			<form onSubmit={handleSubmit}>
-				<div className={style.formGroup}>
-					<label>
-						Name:
-						<input
-							type="text"
-							name="name"
-							value={formData.name}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							placeholder="Enter name"
-							required
-						/>
-					</label>
-					{errors.name && <p>{errors.name}</p>}
-				</div>
+			<Formik
+				initialValues={{
+					name: "",
+					phone: "",
+					email: "",
+					address: "",
+					priority: false,
+				}}
+				validationSchema={validationSchema}
+				onSubmit={handleSubmit}
+			>
+				<Form>
+					<div className={style.formGroup}>
+						<label>
+							Name:
+							<Field
+								type="text"
+								name="name"
+								placeholder="Enter name"
+							/>
+						</label>
+						<ErrorMessage name="name" component="p" />
+					</div>
 
-				<div className={style.formGroup}>
-					<label>
-						Phone:
-						<input
-							type="text"
-							name="phone"
-							value={formData.phone}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							placeholder="Enter phone number"
-							required
-						/>
-					</label>
-					{errors.phone && <p>{errors.phone}</p>}
-				</div>
+					<div className={style.formGroup}>
+						<label>
+							Phone:
+							<Field
+								type="text"
+								name="phone"
+								placeholder="Enter phone number"
+							/>
+						</label>
+						<ErrorMessage name="phone" component="p" />
+					</div>
 
-				<div className={style.formGroup}>
-					<label>
-						Email:
-						<input
-							type="email"
-							name="email"
-							value={formData.email}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							placeholder="Enter email"
-							required
-						/>
-					</label>
-					{errors.email && <p>{errors.email}</p>}
-				</div>
+					<div className={style.formGroup}>
+						<label>
+							Email:
+							<Field
+								type="email"
+								name="email"
+								placeholder="Enter email"
+							/>
+						</label>
+						<ErrorMessage name="email" component="p" />
+					</div>
 
-				<div className={style.formGroup}>
-					<label>
-						Address:
-						<input
-							type="text"
-							name="address"
-							value={formData.address}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							placeholder="Enter address"
-							required
-						/>
-					</label>
-					{errors.address && <p>{errors.address}</p>}
-				</div>
+					<div className={style.formGroup}>
+						<label>
+							Address:
+							<Field
+								type="text"
+								name="address"
+								placeholder="Enter address"
+							/>
+						</label>
+						<ErrorMessage name="address" component="p" />
+					</div>
 
-				<div className={style.formGroup}>
-					<input
-						type="checkbox"
-						id="priority"
-						name="priority"
-						checked={formData.priority}
-						onChange={handleChange}
-					/>
-					<label htmlFor="priority">
-						Want to give your order priority?
-					</label>
-				</div>
+					<div className={style.formGroup}>
+						<Field type="checkbox" id="priority" name="priority" />
+						<label htmlFor="priority">
+							Want to give your order priority?
+						</label>
+					</div>
 
-				<Button type="submit">Order now for €{totalPrice}</Button>
-			</form>
+					<Button type="submit">Order now for €{totalPrice}</Button>
+				</Form>
+			</Formik>
 		</div>
 	);
 }
-

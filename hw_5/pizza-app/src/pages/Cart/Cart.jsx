@@ -47,9 +47,12 @@ export default function Cart() {
 	return (
 		<div className={style.container}>
 			<div className={style.actions}>
-				<div>
+				<div className={style.buttons}>
 					<Button onClick={redirectToMenu}>
 						{"\u2190"}Back to menu
+					</Button>
+					<Button onClick={redirectToOrder}>
+						Back to orders{"\u2192"}
 					</Button>
 				</div>
 				<h1>Your cart, {userName}</h1>
@@ -72,7 +75,7 @@ export default function Cart() {
 					</ul>
 				)}
 			</div>
-			<div className={style.totals}>
+			<div className={style.total}>
 				<p>Total items: {cart.totalItems}</p>
 				<p>Total price: €{cart.totalPrice}</p>
 			</div>

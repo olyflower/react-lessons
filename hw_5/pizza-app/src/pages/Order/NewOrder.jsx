@@ -1,10 +1,10 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { addOrder } from "../../redux/slices/orderSlice";
-import { useRedirect } from "../../hooks/useRedirect";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import Button from "../../components/Button/Button";
+import { createOrder } from "../../redux/slices/orderSlice";
 import style from "../Order/NewOrder.module.css";
 
 const validationSchema = Yup.object({
@@ -12,24 +12,42 @@ const validationSchema = Yup.object({
 	phone: Yup.string()
 		.matches(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
 		.required("Required"),
-	email: Yup.string().email("Invalid email").required("Required"),
 	address: Yup.string().required("Required"),
 });
 
 export default function NewOrder() {
 	const totalPrice = useSelector((store) => store.cart.totalPrice);
+	const cartItems = useSelector((store) => store.cart.items);
 	const dispatch = useDispatch();
-	const redirectToOrder = useRedirect("/order");
+	const navigate = useNavigate();
 
-	const handleSubmit = (values, { resetForm }) => {
-		const newOrder = {
-			...values,
-			totalPrice,
-			id: Date.now(),
+	const handleSubmit = async (values, { resetForm }) => {
+		const orderData = {
+			customer: values.name,
+			phone: values.phone,
+			address: values.address,
+			priority: values.priority,
+			position: "",
+			cart: cartItems.map((item) => ({
+				pizzaId: item.id,
+				name: item.name,
+				quantity: item.quantity,
+				unitPrice: item.unitPrice,
+				totalPrice: item.quantity * item.unitPrice,
+			})),
 		};
 
-		dispatch(addOrder(newOrder));
-		redirectToOrder();
+		try {
+			const result = await dispatch(createOrder(orderData));
+			if (createOrder.fulfilled.match(result)) {
+				navigate(`/order/${result.payload.data.id}`);
+			} else {
+				console.error("Something went wrong", result.payload);
+			}
+		} catch (error) {
+			console.error("Error creating order", error);
+		}
+
 		resetForm();
 	};
 
@@ -40,7 +58,6 @@ export default function NewOrder() {
 				initialValues={{
 					name: "",
 					phone: "",
-					email: "",
 					address: "",
 					priority: false,
 				}}
@@ -70,18 +87,6 @@ export default function NewOrder() {
 							/>
 						</label>
 						<ErrorMessage name="phone" component="p" />
-					</div>
-
-					<div className={style.formGroup}>
-						<label>
-							Email:
-							<Field
-								type="email"
-								name="email"
-								placeholder="Enter email"
-							/>
-						</label>
-						<ErrorMessage name="email" component="p" />
 					</div>
 
 					<div className={style.formGroup}>

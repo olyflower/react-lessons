@@ -4,6 +4,7 @@ import Menu from "./pages/Menu/Menu";
 import Cart from "./pages/Cart/Cart";
 import Order from "./pages/Order/Order";
 import NewOrder from "./pages/Order/NewOrder";
+import OrderDetail from "./pages/OrderDetail/OrderDetail";
 import NoPage from "./pages/NoPage/NoPage";
 import Layout from "./components/Layout/Layout";
 
@@ -18,7 +19,8 @@ function App() {
 						<Route path="menu" element={<Menu />} />
 						<Route path="cart" element={<Cart />} />
 						<Route path="order" element={<Order />} />
-						<Route path="order/new" element={<NewOrder />} /> 
+						<Route path="order/new" element={<NewOrder />} />
+						<Route path="order/:id" element={<OrderDetail />} />
 					</Route>
 					<Route path="*" element={<NoPage />} />
 				</Routes>

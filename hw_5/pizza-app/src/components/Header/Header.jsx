@@ -3,12 +3,10 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useRedirect } from "../../hooks/useRedirect";
 import style from "../../components/Header/Header.module.css";
-import Input from "../Input/Input";
 import Button from "../Button/Button";
 
 export default function Header() {
 	const userName = useSelector((state) => state.auth.userName);
-
 	const redirectToCart = useRedirect("/cart");
 
 	return (
@@ -16,10 +14,7 @@ export default function Header() {
 			<Link className={style.logo} to="/">
 				Pizza Day
 			</Link>
-			<form>
-				<Input placeholder="Search for the order #" />
-			</form>
-			{userName && <p>{userName}</p>}
+			{userName && <p>Welcome, {userName}!</p>}
 			<Button onClick={redirectToCart}>Cart</Button>
 		</div>
 	);

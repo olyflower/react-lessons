@@ -1,167 +1,116 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { addOrder } from "../../redux/slices/orderSlice";
-import { useRedirect } from "../../hooks/useRedirect";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import Button from "../../components/Button/Button";
+import { createOrder } from "../../redux/slices/orderSlice";
 import style from "../Order/NewOrder.module.css";
 
+const validationSchema = Yup.object({
+	name: Yup.string().required("Required"),
+	phone: Yup.string()
+		.matches(/^\+?[1-9]\d{1,14}$/, "Invalid phone number")
+		.required("Required"),
+	address: Yup.string().required("Required"),
+});
+
 export default function NewOrder() {
-	const [formData, setFormData] = useState({
-		name: "",
-		phone: "",
-		email: "",
-		address: "",
-		priority: false,
-	});
-
-	const [errors, setErrors] = useState({
-		name: "",
-		phone: "",
-		email: "",
-		address: "",
-	});
-
 	const totalPrice = useSelector((store) => store.cart.totalPrice);
+	const cartItems = useSelector((store) => store.cart.items);
 	const dispatch = useDispatch();
-	const redirectToOrder = useRedirect("/order");
+	const navigate = useNavigate();
 
-	const handleBlur = (event) => {
-		const { name, value } = event.target;
-		let error = "";
-
-		if (name === "email" && value.trim() && !/\S+@\S+\.\S+/.test(value)) {
-			error = "Invalid email";
-		}
-
-		if (
-			name === "phone" &&
-			value.trim() &&
-			!/^\+?[1-9]\d{1,14}$/.test(value)
-		) {
-			error = "Invalid phone number";
-		}
-
-		setErrors((prevErrors) => ({
-			...prevErrors,
-			[name]: error,
-		}));
-	};
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		console.log(formData);
-
-		const newOrder = {
-			...formData,
-			totalPrice,
-			id: Date.now(),
+	const handleSubmit = async (values, { resetForm }) => {
+		const orderData = {
+			customer: values.name,
+			phone: values.phone,
+			address: values.address,
+			priority: values.priority,
+			position: "",
+			cart: cartItems.map((item) => ({
+				pizzaId: item.id,
+				name: item.name,
+				quantity: item.quantity,
+				unitPrice: item.unitPrice,
+				totalPrice: item.quantity * item.unitPrice,
+			})),
 		};
 
-		dispatch(addOrder(newOrder));
+		try {
+			const result = await dispatch(createOrder(orderData));
+			if (createOrder.fulfilled.match(result)) {
+				navigate(`/order/${result.payload.data.id}`);
+			} else {
+				console.error("Something went wrong", result.payload);
+			}
+		} catch (error) {
+			console.error("Error creating order", error);
+		}
 
-		redirectToOrder();
-
-		setFormData({
-			name: "",
-			phone: "",
-			email: "",
-			address: "",
-			priority: false,
-		});
-	};
-
-	const handleChange = (event) => {
-		const { name, value, type, checked } = event.target;
-		setFormData({
-			...formData,
-			[name]: type === "checkbox" ? checked : value,
-		});
+		resetForm();
 	};
 
 	return (
 		<div className={style.container}>
 			<h1>Ready to order? Let's go!</h1>
-			<form onSubmit={handleSubmit}>
-				<div className={style.formGroup}>
-					<label>
-						Name:
-						<input
-							type="text"
-							name="name"
-							value={formData.name}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							placeholder="Enter name"
-							required
-						/>
-					</label>
-					{errors.name && <p>{errors.name}</p>}
-				</div>
+			<Formik
+				initialValues={{
+					name: "",
+					phone: "",
+					address: "",
+					priority: false,
+				}}
+				validationSchema={validationSchema}
+				onSubmit={handleSubmit}
+			>
+				<Form>
+					<div className={style.formGroup}>
+						<label>
+							Name:
+							<Field
+								type="text"
+								name="name"
+								placeholder="Enter name"
+							/>
+						</label>
+						<ErrorMessage name="name" component="p" />
+					</div>
 
-				<div className={style.formGroup}>
-					<label>
-						Phone:
-						<input
-							type="text"
-							name="phone"
-							value={formData.phone}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							placeholder="Enter phone number"
-							required
-						/>
-					</label>
-					{errors.phone && <p>{errors.phone}</p>}
-				</div>
+					<div className={style.formGroup}>
+						<label>
+							Phone:
+							<Field
+								type="text"
+								name="phone"
+								placeholder="Enter phone number"
+							/>
+						</label>
+						<ErrorMessage name="phone" component="p" />
+					</div>
 
-				<div className={style.formGroup}>
-					<label>
-						Email:
-						<input
-							type="email"
-							name="email"
-							value={formData.email}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							placeholder="Enter email"
-							required
-						/>
-					</label>
-					{errors.email && <p>{errors.email}</p>}
-				</div>
+					<div className={style.formGroup}>
+						<label>
+							Address:
+							<Field
+								type="text"
+								name="address"
+								placeholder="Enter address"
+							/>
+						</label>
+						<ErrorMessage name="address" component="p" />
+					</div>
 
-				<div className={style.formGroup}>
-					<label>
-						Address:
-						<input
-							type="text"
-							name="address"
-							value={formData.address}
-							onChange={handleChange}
-							onBlur={handleBlur}
-							placeholder="Enter address"
-							required
-						/>
-					</label>
-					{errors.address && <p>{errors.address}</p>}
-				</div>
+					<div className={style.formGroup}>
+						<Field type="checkbox" id="priority" name="priority" />
+						<label htmlFor="priority">
+							Want to give your order priority?
+						</label>
+					</div>
 
-				<div className={style.formGroup}>
-					<input
-						type="checkbox"
-						id="priority"
-						name="priority"
-						checked={formData.priority}
-						onChange={handleChange}
-					/>
-					<label htmlFor="priority">
-						Want to give your order priority?
-					</label>
-				</div>
-
-				<Button type="submit">Order now for €{totalPrice}</Button>
-			</form>
+					<Button type="submit">Order now for €{totalPrice}</Button>
+				</Form>
+			</Formik>
 		</div>
 	);
 }
-

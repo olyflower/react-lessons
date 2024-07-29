@@ -42,7 +42,7 @@ export default function Login() {
 							placeholder="Your full name"
 							onChange={(e) => setUserName(e.target.value)}
 						/>
-						<Button>Login</Button>
+						<Button type="submit">Login</Button>
 					</form>
 				</div>
 			</div>

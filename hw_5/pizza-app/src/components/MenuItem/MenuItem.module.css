@@ -12,7 +12,7 @@
 .pizza__info {
 	display: flex;
 	flex-direction: column;
-	width: 500px;
+	width: 800px;
 }
 
 .pizza__name {
